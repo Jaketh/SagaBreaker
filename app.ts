@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { generateAndSavePlotOutline } from './src/workflow/plotOutline'; // Adjust the path as necessary
+import { generateAndSavePlotOutline } from './src/workflow/plotOutline';
 
 async function main() {
   try {

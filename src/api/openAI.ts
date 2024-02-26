@@ -20,15 +20,17 @@ interface OpenAIResponse {
     }[];
 }
 
-export async function generateText(prompt: string, settings?: object): Promise<string> {
+export async function generateText(prompt: string, userInput: string, settings?: object): Promise<string> {
     if (!OPENAI_API_KEY) {
         throw new Error("OpenAI API key is not configured.");
     }
-    console.log('generateText ran');
+    console.log('generateText running...');
+
+    const fullPrompt = `Prompt:${prompt}\n\n User Input: ${userInput}`;
     
     const params = {
         model: "gpt-3.5-turbo",
-        messages: [{"role": "user", "content": prompt}], // Use the function's prompt parameter
+        messages: [{"role": "user", "content": fullPrompt}],
         temperature: 0.7,
         max_tokens: 150,
         ...settings,

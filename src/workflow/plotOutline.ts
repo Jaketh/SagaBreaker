@@ -1,6 +1,6 @@
-import { generateText } from '../api/openAI'; // Adjust the path as necessary
-import { writeContentToFile } from '../utils/filewriter'; // Adjust the path as necessary
-import { askQuestion } from '../utils/inputPrompter'; // Assuming you've extracted askQuestion to a utility module
+import { generateText } from '../api/openAI'; 
+import { writeContentToFile } from '../utils/filewriter'; 
+import { askQuestion } from '../utils/inputPrompter';
 
 /**
  * Prompts the user for a novel summary, generates a plot outline based on that summary,
@@ -11,8 +11,10 @@ export async function generateAndSavePlotOutline(): Promise<void> {
     // Prompt the user for a novel summary
     const novelSummary = await askQuestion("Enter your novel's summary: ");
 
+    const plotPrompt = "Generate a plot outline based on the following novel summary: ";
+    
     // Use the summary to generate a plot outline
-    const plotOutline = await generateText(novelSummary);
+    const plotOutline = await generateText(plotPrompt, novelSummary);
 
     // Save the generated plot outline to a file
     await writeContentToFile(plotOutline, 'plot-outline.txt');
