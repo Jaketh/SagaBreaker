@@ -11,4 +11,4 @@ yarn-error.log*
 # dotenv environment variables file
 .env
 
-/output/*
+output/
