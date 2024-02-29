@@ -2,17 +2,19 @@ const fs = require('fs').promises;
 const path = require('path');
 
 /**
- * Writes content to a specified file. If the file doesn't exist, it's created.
+ * Writes content to a specified file path. If the file doesn't exist, it's created, along with any necessary directories.
  * @param {string} content - The content to write to the file.
- * @param {string} filename - The name of the file (with extension).
+ * @param {string} filePath - The full path to the file (including the filename and extension).
  */
-export async function writeContentToFile(content: string, filename: string) {
-  // Construct the file path to point to the output directory in the project root
-  const filePath = path.join(__dirname, '..', '..', 'output', filename);
+export async function writeContentToFile(content: string, filePath: string) {
   try {
+    // Ensure the directory exists
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    // Write the file
     await fs.writeFile(filePath, content, 'utf8');
-    console.log(`Content written to ${filename}`);
+    console.log(`Content written to ${filePath}`);
   } catch (error) {
-    console.error(`Failed to write to ${filename}:`, error);
+    console.error(`Failed to write to ${filePath}:`, error);
+    throw error; // Re-throw the error for further handling if necessary
   }
 }

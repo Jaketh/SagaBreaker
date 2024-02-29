@@ -6,7 +6,7 @@ import { askQuestion } from '../utils/inputPrompter';
  * Prompts the user for a novel summary, generates a plot outline based on that summary,
  * and saves the plot outline to a file.
  */
-export async function generateAndSavePlotOutline(): Promise<void> {
+export async function generateAndSavePlotOutline(askQuestion: (question: string) => Promise<string>): Promise<void> {
   try {
     // Prompt the user for a novel summary
     const novelSummary = await askQuestion("Enter your novel's summary: ");

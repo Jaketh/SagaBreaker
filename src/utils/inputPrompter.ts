@@ -11,11 +11,10 @@ const rl = readline.createInterface({
  * @param {string} question The question to prompt the user with.
  * @returns {Promise<string>} The user's input.
  */
+
 export function askQuestion(question: string): Promise<string> {
-  return new Promise((resolve) => {
-    rl.question(question, (input) => {
-      resolve(input);
-      rl.close(); // Close the interface after receiving input
+    return new Promise((resolve) => {
+      rl.question(question, (input) => resolve(input));
     });
-  });
-}
+  }
+  

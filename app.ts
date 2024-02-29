@@ -1,38 +1,37 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { promises as fs } from 'fs';
+import readline from 'readline';
 import { generateAndSavePlotOutline } from './src/workflow/plotOutline';
-import { generateAndSaveChapterSummaries } from './src/workflow/chapterSummaries'; // Assuming you have this function
+import { generateAndSaveChapterSummaries } from './src/workflow/chapterSummaries';
 
-const plotOutlineFilePath = './output/plot-outline.txt'; // Ensure the path matches where you're saving the file
+// Create the readline interface at the top level of your application
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
-async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await fs.access(filePath);
-    return true; // File exists
-  } catch {
-    return false; // File does not exist
-  }
+// Adjust the askQuestion function to use the top-level readline interface
+function askQuestion(question: string): Promise<string> {
+  return new Promise((resolve) => {
+    rl.question(question, (input) => resolve(input));
+  });
 }
 
 async function main() {
   try {
-    const plotOutlineExists = await fileExists(plotOutlineFilePath);
-
-    if (!plotOutlineExists) {
-      console.log("Plot outline file does not exist. Generating now...");
-      await generateAndSavePlotOutline();
-    } else {
-      console.log("Plot outline file exists. Proceeding to chapter summaries...");
-      // Optionally, ask the user if they want to proceed with generating chapter summaries
-      // You can use your existing prompt utility here if you want to ask for confirmation
+    // Your main application logic here
+    // For example:
+    await generateAndSavePlotOutline(askQuestion);
+    // Proceed based on user input or application logic
+    const proceed = await askQuestion("Would you like to proceed with generating chapter summaries? (y/n): ");
+    if (proceed.toLowerCase() === 'y') {
+      await generateAndSaveChapterSummaries(askQuestion); // Pass askQuestion or necessary user inputs to the function
     }
-
-    // Call the function to start the chapter summaries process
-    await generateAndSaveChapterSummaries(); // Ensure this function exists and is correctly implemented
-
+    // Any other logic
   } catch (error) {
     console.error("An error occurred:", error);
+  } finally {
+    rl.close(); // Ensure the readline interface is closed when done
   }
 }
 

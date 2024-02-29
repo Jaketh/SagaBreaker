@@ -26,13 +26,16 @@ export async function generateText(prompt: string, userInput: string, settings?:
     }
     console.log('generateText running...');
 
-    const fullPrompt = `Prompt:${prompt}\n\n User Input: ${userInput}`;
+    // const fullPrompt = `Prompt:${prompt} User Input: ${userInput}`;
     
     const params = {
-        model: "gpt-3.5-turbo",
-        messages: [{"role": "user", "content": fullPrompt}],
+        model: "gpt-4-turbo-preview",
+        messages: [
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": userInput}
+        ],
         temperature: 0.7,
-        max_tokens: 1000,
+        max_tokens: 4000,
         ...settings,
     };
 
@@ -51,9 +54,9 @@ export async function generateText(prompt: string, userInput: string, settings?:
         console.log("Generated Text:", generatedText);
         return generatedText;
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error("Axios error:", error.message);
-            throw new Error(`OpenAI API request failed: ${error.message}`);
+        if (axios.isAxiosError(error) && error.response) {
+            console.error("Axios error:", error.response.data); // This might contain more detailed error information
+            throw new Error(`OpenAI API request failed: ${error.response.data?.error?.message}`);
         } else {
             console.error("Unexpected error:", error);
             throw new Error("An unexpected error occurred while requesting the OpenAI API.");

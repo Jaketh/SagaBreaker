@@ -4,8 +4,8 @@ import { askQuestion } from '../utils/inputPrompter';
 import { generateText } from '../api/openAI';
 import { writeContentToFile } from '../utils/filewriter';
 
-
-export async function generateAndSaveChapterSummaries(): Promise<void> {
+// export async function generateAndSavePlotOutline(askQuestion: (question: string) => Promise<string>): Promise<void> {
+export async function generateAndSaveChapterSummaries(askQuestion: (question: string) => Promise<string>): Promise<void>  {
     try {
       // Prompt the user for the number of chapters
       const chapterCount = await askQuestion("How many chapters would you like the story to have? ");
@@ -30,8 +30,10 @@ export async function generateAndSaveChapterSummaries(): Promise<void> {
       }
   
       // Write all chapter summaries to a file
-      const chapterSummariesPath = path.join(__dirname, '..', 'output', 'chapter-summaries.txt');
+      const chapterSummariesPath = path.join(__dirname, '..', '..', 'output', 'chapter-summaries.txt');
       await writeContentToFile(chapterSummaries, chapterSummariesPath);
+
+
   
       console.log("Chapter summaries generated and saved to chapter-summaries.txt.");
     } catch (error) {
