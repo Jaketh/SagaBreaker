@@ -101,10 +101,8 @@ issues. Rate continuity_score 1–10 (10 = perfect consistency).\
         output_config={
             "format": {
                 "type": "json_schema",
-                "json_schema": {
-                    "name": "CriticResult",
-                    "schema": CriticResult.model_json_schema(),
-                },
+                "name": "CriticResult",
+                "schema": CriticResult.model_json_schema(),
             }
         },
     )
