@@ -17,6 +17,8 @@ Flow:
   6. Done — report output location
 """
 from __future__ import annotations
+import sys
+from pathlib import Path
 import anthropic
 
 from src.agents.architect import (
@@ -49,6 +51,38 @@ from src.utils.console import (
 MAX_REVISION_PASSES = 2
 
 
+def _load_premise() -> str:
+    """
+    Get the novel premise from one of three sources (in priority order):
+      1. A .md file path passed as a command-line argument: python app.py premise.md
+      2. A file path typed interactively when prompted
+      3. Plain text typed directly at the prompt
+    """
+    # Command-line file argument
+    if len(sys.argv) > 1:
+        path = Path(sys.argv[1])
+        if path.exists():
+            print(f"Reading premise from: {path}\n")
+            return path.read_text(encoding="utf-8")
+        else:
+            print(f"Warning: file '{path}' not found — falling back to interactive input.\n")
+
+    # Interactive: file path or inline text
+    print("Enter your premise one of two ways:")
+    print("  • Type or paste a file path to a .md file  (e.g. premise.md)")
+    print("  • Or just type your premise directly and press Enter\n")
+    answer = ask("> ").strip()
+
+    # If it looks like a file path, try to read it
+    candidate = Path(answer)
+    if candidate.suffix in {".md", ".txt"} and candidate.exists():
+        print(f"Reading premise from: {candidate}\n")
+        return candidate.read_text(encoding="utf-8")
+
+    # Otherwise treat the answer as the premise itself
+    return answer
+
+
 def run() -> None:
     client = anthropic.Anthropic()
     ensure_output_dirs()
@@ -70,10 +104,7 @@ def run() -> None:
     # ── Phase 1: Build world model ────────────────────────────────────────────
     if world is None:
         print("\nWelcome to SagaBreaker — Agentic Novel Writer\n")
-        premise = ask(
-            "Describe your novel premise "
-            "(characters, conflict, setting, themes):\n> "
-        )
+        premise = _load_premise()
         world = build_world_model(premise, client)
         save_world_model(world)
 

@@ -30,7 +30,7 @@ def _parse(client: anthropic.Anthropic, system: str, user: str, schema: type) ->
         messages=[{"role": "user", "content": user}],
         output_config={
             "format": {
-                "type": "json",
+                "type": "json_schema",
                 "json_schema": {
                     "name": schema.__name__,
                     "schema": schema.model_json_schema(),
